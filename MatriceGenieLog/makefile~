@@ -1,0 +1,42 @@
+# règles qui ne créent pas de fichier
+.PHONY: exec, instal, clean, mrproper
+ 
+# désactivation des règles implicites
+.SUFFIXES:
+
+
+all: puissX.o
+		g++ puissX.o G_grid.o player.o -o PuissanceX
+
+puissX.o: G_grid.o player.o puissX.cpp puissX.h
+		g++ -c puissX.cpp -o puissX.o
+ 
+G_grid.o: G_grid.cpp G_grid.h
+		g++ -c G_grid.cpp -o G_grid.o
+
+player.o: player.cpp player.h
+		g++ -c player.cpp -o player.o
+
+exec: all
+		PuissanceX
+
+#copie l'executable dans DIR et les sources dans SRC_DIR si il est donné (DIR sinon)
+install: all
+ifneq ($(DIR),)
+		mkdir -p $(DIR)
+ifeq ($(SRC_DIR),)
+		SRC_DIR=$(DIR)
+else
+		mkdir -p $(SRC_DIR)
+endif
+		cp -uv PuissanceX $(DIR)
+		cp -uv *.h $(SRC_DIR)
+		cp -uv *.cpp $(SRC_DIR)
+endif
+
+
+clean:
+		rm -rf *.o
+ 
+mrproper: clean
+		rm -rf PuissanceX
